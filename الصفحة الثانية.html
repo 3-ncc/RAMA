@@ -1,36 +1,103 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>امووت فيك واهيمك</title>
+<meta charset="UTF-8">
+<title>امووت فيك واهيمك</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    body{
-      font-family:'Cairo', Arial, sans-serif;
-      padding:20px;
-      background:url('https://i.ibb.co/RTgfBSdx/Beige-Red-Minimalist-Happy-Valentine-s-Day-Love-You-Card-1.png')
-                 no-repeat center center fixed;
-      background-size:cover;
-    }
-    .box{
-      background:#fff;
-      padding:15px;
-      border-radius:8px;
-      max-width:700px;
-      margin:auto;
-    }
-    label{display:block;margin-top:10px}
-    input,select,button,textarea{width:100%;padding:6px;margin-top:5px}
-    button{background:#ffbef4;border:none;border-radius:6px;cursor:pointer}
-    pre{background:#eee;padding:10px;white-space:pre-line;margin-top:15px}
-  </style>
+<style>
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:'Cairo', Arial, sans-serif;
+  padding:20px;
+  background:url('https://i.ibb.co/RTgfBSdx/Beige-Red-Minimalist-Happy-Valentine-s-Day-Love-You-Card-1.png')
+           no-repeat center center fixed;
+  background-size:cover;
+  transition:opacity .4s ease;
+}
+
+/* أنيميشن دخول */
+.page{
+  animation:pageIn .8s ease;
+}
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* زر الرجوع */
+.back-home{
+  display:block;
+  width:fit-content;
+  margin:10px auto 20px;
+  padding:10px 22px;
+  background:#ffbef4;
+  color:#333;
+  text-decoration:none;
+  border-radius:25px;
+  font-weight:700;
+  box-shadow:0 6px 18px rgba(255,190,244,.5);
+  transition:.4s;
+}
+.back-home:hover{
+  transform:translateY(-3px);
+  background:#ff9fe6;
+}
+
+/* الكرت */
+.box{
+  background:rgba(255,255,255,0.92);
+  padding:25px;
+  border-radius:18px;
+  max-width:720px;
+  margin:auto;
+  box-shadow:0 15px 30px rgba(0,0,0,.18);
+}
+
+h2{text-align:center;color:#444;margin-bottom:20px}
+
+label{display:block;margin-top:12px;font-weight:600}
+
+input,select,button,textarea{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-family:'Cairo', sans-serif;
+}
+
+button{
+  background:#ffbef4;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:15px;
+  transition:.3s;
+}
+button:hover{background:#ff9fe6}
+
+pre{
+  background:#fff0fa;
+  padding:15px;
+  white-space:pre-line;
+  margin-top:20px;
+  border-radius:12px;
+  border:1px solid #ffc7e8;
+}
+</style>
 </head>
+
 <body>
 
+<a href="index.html" class="back-home">← الرجوع للصفحة الرئيسية</a>
+
+<div class="page">
 <div class="box">
-<h2>تقارير مشرفتي وقمري رموو</h2>
+
+<h2>تقارير مشرفتي وقمري رموو 🤍</h2>
 
 <label>من الساعة</label>
 <input type="time" id="start">
@@ -73,9 +140,24 @@
 
 <button onclick="generate()">توليد التقرير</button>
 <pre id="out"></pre>
+
+</div>
 </div>
 
 <script>
+/* أنيميشن الخروج */
+document.querySelectorAll("a").forEach(link=>{
+  link.addEventListener("click",e=>{
+    const href=link.getAttribute("href");
+    if(href && !href.startsWith("#")){
+      e.preventDefault();
+      document.body.style.opacity=0;
+      setTimeout(()=>location.href=href,400);
+    }
+  });
+});
+
+/* ===== السكربت الأصلي (لم يُمس) ===== */
 function mentions(text){
   if(!text) return '';
   return text.split(',').map(i=>`<@${i.trim()}>`).join('\n');
