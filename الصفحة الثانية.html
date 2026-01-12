@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>امووت فيك واهيمك</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body{
+      font-family:'Cairo', Arial, sans-serif;
+      padding:20px;
+      background:url('https://i.ibb.co/RTgfBSdx/Beige-Red-Minimalist-Happy-Valentine-s-Day-Love-You-Card-1.png')
+                 no-repeat center center fixed;
+      background-size:cover;
+    }
+    .box{
+      background:#fff;
+      padding:15px;
+      border-radius:8px;
+      max-width:700px;
+      margin:auto;
+    }
+    label{display:block;margin-top:10px}
+    input,select,button,textarea{width:100%;padding:6px;margin-top:5px}
+    button{background:#ffbef4;border:none;border-radius:6px;cursor:pointer}
+    pre{background:#eee;padding:10px;white-space:pre-line;margin-top:15px}
+  </style>
+</head>
+<body>
+
+<div class="box">
+<h2>تقارير مشرفتي وقمري رموو</h2>
+
+<label>من الساعة</label>
+<input type="time" id="start">
+
+<label>المنطقة</label>
+<select id="region">
+<option>ساندي و بوليتو</option>
+<option>لوس سانتوس</option>
+</select>
+
+<label>اكواد القيادة (مثال: 1,11,3)</label>
+<input type="text" id="leaders">
+
+<label>الاشراف العام (IDs مفصولة بفاصلة)</label>
+<input type="text" id="general">
+
+<label>الاشراف الميداني (IDs مفصولة بفاصلة)</label>
+<input type="text" id="field">
+
+<label>المسؤول الميداني (IDs مفصولة بفاصلة)</label>
+<input type="text" id="manager">
+
+<label>الدورات المفعلة والوحدات المدعومة</label>
+<label><input type="checkbox" value="الميناء الرئيسي"> الميناء الرئيسي</label>
+<label><input type="checkbox" value="دعم توظيف"> دعم توظيف</label>
+<label><input type="checkbox" value="البحث والانقاذ"> البحث والانقاذ</label>
+<label><input type="checkbox" value="ميناء بوليتو"> ميناء بوليتو</label>
+
+<label>أخرى</label>
+<input type="text" id="other">
+
+<label>رابط التقرير الاول</label>
+<input type="url" id="link1">
+
+<label>رابط التقرير الثاني</label>
+<input type="url" id="link2">
+
+<label>تم رفع التقرير من قبل (IDs)</label>
+<input type="text" id="by">
+
+<button onclick="generate()">توليد التقرير</button>
+<pre id="out"></pre>
+</div>
+
+<script>
+function mentions(text){
+  if(!text) return '';
+  return text.split(',').map(i=>`<@${i.trim()}>`).join('\n');
+}
+
+function generate(){
+  const now=new Date();
+  const days=['الاحد','الاثنين','الثلاثاء','الاربعاء','الخميس','الجمعة','السبت'];
+  const day=days[now.getDay()];
+  const date=`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`;
+
+  const start=document.getElementById('start').value;
+  if(!start){alert('حدد الساعة');return;}
+
+  let [h,m]=start.split(':').map(Number);
+
+  let startAmpm = h >= 12 ? 'م' : 'ص';
+  let start12 = h % 12 || 12;
+
+  let endH = (h + 1) % 24;
+  let endAmpm = endH >= 12 ? 'م' : 'ص';
+  let end12 = endH % 12 || 12;
+
+  const region=document.getElementById('region').value;
+
+  const leaders=document.getElementById('leaders').value
+    .split(',')
+    .filter(Boolean)
+    .map(l=>`E-${l.trim().padStart(3,'0')}`)
+    .join('\n');
+
+  const general=mentions(document.getElementById('general').value);
+  const field=mentions(document.getElementById('field').value);
+  const manager=mentions(document.getElementById('manager').value);
+
+  const checksArr=[...document.querySelectorAll('input[type=checkbox]:checked')].map(c=>c.value);
+  const other=document.getElementById('other').value;
+  if(other) checksArr.push(other);
+  const checks=checksArr.join(' + ');
+
+  const link1=document.getElementById('link1').value;
+  const link2=document.getElementById('link2').value;
+  const by=mentions(document.getElementById('by').value);
+
+  const text=`\`تـم اسـتـلام مهام الاشراف الميداني رقم ( 1 ) في يوم ${day} التاريخ ${date} م من السـاعة ${start12}:${m.toString().padStart(2,'0')} ${startAmpm} اٍلـى الـساعة ${end12}:${m.toString().padStart(2,'0')} ${endAmpm}\`
+
+\`المنطقه : ${region}\`
+
+\`القيادة\`
+
+${leaders}
+
+\`الاشراف العام : \`
+
+${general}
+
+\`الاشراف الميداني : \`
+
+${field}
+
+\`المسؤول الميداني : \`
+
+${manager}
+
+\`الدورات المفعلة والوحدات المدعومة للقطاعات :\`
+\`${checks}\`
+
+\`تم مراجعة وتصحيح تقرير العمليات :\`
+
+${link1}
+
+${link2}
+
+تم رفع التقرير من قبل  : ${by}`;
+
+  document.getElementById('out').innerText=text;
+}
+</script>
+
+</body>
+</html>
