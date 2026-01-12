@@ -1,209 +1,255 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>الصفحة الرئيسية</title>
+<meta charset="UTF-8">
+<title>الصفحة الرئيسية</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    body{
-      margin:0;
-      height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      background:url('https://i.ibb.co/RTgfBSdx/Beige-Red-Minimalist-Happy-Valentine-s-Day-Love-You-Card-1.png')
-                 no-repeat center center fixed;
-      background-size:cover;
-      font-family:'Cairo', sans-serif;
-    }
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Cairo', sans-serif;
+}
 
-    .container{
-      background:rgba(255,255,255,0.88);
-      padding:45px;
-      border-radius:18px;
-      text-align:center;
-      box-shadow:0 15px 30px rgba(0,0,0,0.18);
-      animation: fadeIn 1.2s ease;
-    }
+/* الخلفية */
+#bg{
+  position:fixed;
+  inset:0;
+  background:url('https://i.ibb.co/RTgfBSdx/Beige-Red-Minimalist-Happy-Valentine-s-Day-Love-You-Card-1.png')
+  no-repeat center center fixed;
+  background-size:cover;
+  z-index:-1;
+  transition:filter 0.5s ease;
+}
+#bg.blur{filter:blur(6px);}
 
-    h1{margin-bottom:30px;color:#444}
+/* الصندوق الأساسي */
+.container{
+  background:rgba(255,255,255,0.9);
+  padding:45px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 15px 30px rgba(0,0,0,0.18);
+}
 
-    a{
-      display:block;
-      text-decoration:none;
-      background:#ffbef4;
-      color:#333;
-      padding:16px;
-      margin:18px 0;
-      border-radius:14px;
-      font-size:19px;
-      font-weight:600;
-      transition:.3s;
-    }
+h1{margin-bottom:30px;color:#444}
 
-    a:hover{
-      background:#ff9fe6;
-      transform:scale(1.08);
-    }
+a{
+  display:block;
+  text-decoration:none;
+  background:#ffbef4;
+  color:#333;
+  padding:16px;
+  margin:18px 0;
+  border-radius:14px;
+  font-size:19px;
+  font-weight:600;
+  transition:.3s;
+}
+a:hover{background:#ff9fe6;transform:scale(1.08)}
 
-    @keyframes fadeIn{
-      from{opacity:0;transform:translateY(30px)}
-      to{opacity:1;transform:none}
-    }
+/* ===== المفاجأة ===== */
+#secretOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(255,190,244,0.35);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  z-index:9999;
+}
 
-    /* ===== Secret Love Mode ===== */
-    #secretOverlay{
-      position:fixed;
-      inset:0;
-      background:rgba(255,190,244,0.25);
-      display:none;
-      justify-content:center;
-      align-items:center;
-      overflow:hidden;
-      z-index:9999;
-    }
+#secretBox{
+  background:white;
+  padding:36px 48px;
+  border-radius:30px;
+  text-align:center;
+  box-shadow:0 20px 50px rgba(0,0,0,0.25);
+}
 
-    #secretText{
-      background:white;
-      padding:32px 42px;
-      border-radius:24px;
-      font-size:26px;
-      font-weight:700;
-      color:#ff5fa2;
-      box-shadow:0 15px 40px rgba(0,0,0,0.2);
-      animation: popText 0.8s ease;
-      text-align:center;
-      line-height:1.7;
-    }
+#secretText{
+  font-size:26px;
+  font-weight:700;
+  color:#ff5fa2;
+  line-height:1.7;
+  animation:pulse 1.6s infinite;
+}
 
-    @keyframes popText{
-      from{transform:scale(0.6);opacity:0}
-      to{transform:scale(1);opacity:1}
-    }
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.06)}
+}
 
-    .heart{
-      position:absolute;
-      bottom:-30px;
-      font-size:24px;
-      animation: floatUp 6s linear forwards;
-    }
+#countdown{
+  margin-top:14px;
+  font-size:18px;
+  color:#999;
+}
 
-    @keyframes floatUp{
-      from{transform:translateY(0) scale(1);opacity:1}
-      to{transform:translateY(-110vh) scale(1.5);opacity:0}
-    }
+/* قلوب CSS */
+.css-heart{
+  position:absolute;
+  bottom:-30px;
+  width:22px;
+  height:22px;
+  background:#ff5fa2;
+  transform:rotate(-45deg);
+  animation:floatUp 6s linear forwards;
+}
+.css-heart::before,
+.css-heart::after{
+  content:"";
+  position:absolute;
+  width:22px;
+  height:22px;
+  background:#ff5fa2;
+  border-radius:50%;
+}
+.css-heart::before{top:-11px}
+.css-heart::after{left:11px}
 
-    /* ===== SKIP Button ===== */
-    #skipBtn{
-      margin-top:22px;
-      padding:12px 32px;
-      font-size:16px;
-      border:none;
-      border-radius:999px;
-      cursor:pointer;
-      background:linear-gradient(135deg,#ff9fe6,#ff5fa2);
-      color:white;
-      font-weight:700;
-      letter-spacing:1px;
-      box-shadow:0 8px 20px rgba(255,95,162,0.4);
-      transition:0.3s ease;
-    }
+/* نجوم */
+.star{
+  position:absolute;
+  color:#ffd6ef;
+  font-size:14px;
+  animation:floatUp 4s linear forwards;
+}
 
-    #skipBtn:hover{
-      transform:translateY(-3px) scale(1.05);
-      box-shadow:0 12px 28px rgba(255,95,162,0.55);
-    }
+@keyframes floatUp{
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(-110vh);opacity:0}
+}
 
-    #skipBtn:active{transform:scale(0.95)}
-  </style>
+/* زر SKIP */
+#skipBtn{
+  margin-top:20px;
+  padding:12px 36px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ff9fe6,#ff5fa2);
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+}
+</style>
 </head>
 
 <body>
 
+<div id="bg"></div>
+
 <div class="container">
-  <h1>اختر الصفحة 🌸</h1>
+  <h1>اختاري الصفحة 🌸</h1>
   <a href="الصفحة الاولى.html">تصحيح تقارير العمليات</a>
   <a href="الصفحة الثانية.html">تقارير المشرفة الحلووة</a>
 </div>
 
-<!-- Secret Overlay -->
 <div id="secretOverlay">
-  <div id="secretText">
-    تراني والله أحبك  
-    <br>
-    ايووه انتي يا قمري 💗
-    <br><br>
+  <div id="secretBox">
+    <div id="secretText"></div>
+    <div id="countdown"></div>
     <button id="skipBtn">SKIP</button>
   </div>
 </div>
 
-<audio id="secretSong">
-  <source src="song.mp3" type="audio/mpeg">
-</audio>
+<audio id="secretSong"><source src="song.mp3"></audio>
+<audio id="ding"><source src="https://assets.mixkit.co/sfx/preview/mixkit-soft-bell-2218.mp3"></audio>
 
 <script>
-let secretShown = false;
-let secretTimeout;
-let heartsInterval;
+const messages=[
+"تراني والله أحبك 🤍",
+"ايووه انتي يا قمري 🌙",
+"انتي اغلى ما املك 💖",
+"وجودك نعمة بحياتي 🌸"
+];
 
-document.addEventListener('keydown', function(e){
-  if (e.shiftKey && (e.key === '&' || e.key === '7') && !secretShown){
-    secretShown = true;
-    showSecret();
+
+let time=45,msgIndex=0,interval,spawnInt;
+
+/* 🔑 الاختصار المستقر */
+document.addEventListener('keydown',function(e){
+  if(
+    e.shiftKey &&
+    (e.key==='7' || e.key==='&') &&
+    document.getElementById('secretOverlay').style.display!=='flex'
+  ){
+    startSecret();
   }
 });
 
-function showSecret(){
-  const overlay = document.getElementById('secretOverlay');
-  const song = document.getElementById('secretSong');
-
-  overlay.style.display = 'flex';
+function startSecret(){
+  document.getElementById('secretOverlay').style.display='flex';
+  document.getElementById('bg').classList.add('blur');
+  document.getElementById('ding').play();
+  const song=document.getElementById('secretSong');
+  song.currentTime=0;
   song.play();
 
-  // توليد قلوب مستمر
-  heartsInterval = setInterval(() => {
-    for(let i=0;i<3;i++){
-      createHeart();
-    }
-  }, 600);
+  updateMessage();
+  document.getElementById('countdown').innerText=`${time}s`;
 
-  // إيقاف القلوب قبل النهاية بـ 5 ثواني
-  setTimeout(() => {
-    clearInterval(heartsInterval);
-  }, 40000);
+  interval=setInterval(tick,1000);
+  spawnInt=setInterval(()=>{
+    createHeart();
+    createStar();
+  },600);
+}
 
-  secretTimeout = setTimeout(closeSecret, 45000);
+function tick(){
+  time--;
+  document.getElementById('countdown').innerText=`${time}s`;
+
+  if(time%10===0 && msgIndex<messages.length-1){
+    msgIndex++;
+    updateMessage();
+  }
+  if(time<=0) closeSecret();
+}
+
+function updateMessage(){
+  document.getElementById('secretText').innerHTML=messages[msgIndex];
+}
+
+function createHeart(){
+  const h=document.createElement('div');
+  h.className='css-heart';
+  h.style.left=Math.random()*100+'vw';
+  secretOverlay.appendChild(h);
+  setTimeout(()=>h.remove(),7000);
+}
+
+function createStar(){
+  const s=document.createElement('div');
+  s.className='star';
+  s.innerText='✨';
+  s.style.left=Math.random()*100+'vw';
+  secretOverlay.appendChild(s);
+  setTimeout(()=>s.remove(),5000);
 }
 
 function closeSecret(){
-  const overlay = document.getElementById('secretOverlay');
-  const song = document.getElementById('secretSong');
+  clearInterval(interval);
+  clearInterval(spawnInt);
 
-  overlay.style.display = 'none';
+  document.getElementById('secretOverlay').style.display='none';
+  document.getElementById('bg').classList.remove('blur');
+
+  time=45;
+  msgIndex=0;
+
+  const song=document.getElementById('secretSong');
   song.pause();
-  song.currentTime = 0;
-
-  clearTimeout(secretTimeout);
-  clearInterval(heartsInterval);
-
-  secretShown = false;
+  song.currentTime=0;
 }
 
-document.getElementById('skipBtn').onclick = closeSecret;
-
-function createHeart(){
-  const heart = document.createElement('div');
-  heart.className = 'heart';
-  heart.innerText = '💗';
-  heart.style.left = Math.random() * 100 + 'vw';
-  heart.style.animationDuration = (4 + Math.random() * 4) + 's';
-
-  document.getElementById('secretOverlay').appendChild(heart);
-
-  setTimeout(() => heart.remove(), 8000);
-}
+document.getElementById('skipBtn').onclick=closeSecret;
 </script>
 
 </body>
