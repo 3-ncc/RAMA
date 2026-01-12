@@ -1,80 +1,164 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>أحبك ياقلبي</title>
-  <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      margin:0; 
-      padding:20px; 
-      background: url('https://i.ibb.co/Fk4VVZrC/Beige-Red-Minimalist-Happy-Valentine-s-Day-Love-You-Card-1.png') no-repeat center center fixed;
-      background-size: cover;
-    }
-    h1, h2 { color:#333; }
-    .section { 
-      background:rgba(255,255,255,0.85); 
-      padding:20px; 
-      margin-bottom:20px; 
-      border-radius:8px; 
-      box-shadow:0 2px 6px rgba(0,0,0,0.1); 
-    }
-    label { display:block; margin-top:10px; font-size:14px; }
-    input, select, textarea, button { 
-      width:100%; 
-      padding:6px; 
-      margin-top:5px; 
-      font-size:14px;
-    }
-    button { 
-      background:#ffbef4; 
-      color:#fff; 
-      border:none; 
-      border-radius:6px; 
-      cursor:pointer; 
-      font-weight:bold;
-    }
-    button:hover { background:#ff99e3; }
-    .result { 
-      margin-top:15px; 
-      padding:10px; 
-      background:#eef; 
-      border-radius:6px; 
-      white-space:pre-wrap; 
-    }
-  </style>
+<meta charset="UTF-8">
+<title>أموت فيك</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:'Cairo', sans-serif;
+  margin:0;
+  padding:20px;
+  background:url('https://i.ibb.co/Fk4VVZrC/Beige-Red-Minimalist-Happy-Valentine-s-Day-Love-You-Card-1.png')
+  no-repeat center center fixed;
+  background-size:cover;
+  transition:opacity .4s;
+}
+
+/* أنيميشن دخول الصفحة */
+.page{
+  animation:pageIn .7s ease;
+}
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* زر الرجوع */
+.back-home{
+  display:block;
+  width:fit-content;
+  margin:10px auto 20px;
+  padding:10px 22px;
+  background:#ffbef4;
+  color:#333;
+  text-decoration:none;
+  border-radius:25px;
+  font-weight:700;
+  box-shadow:0 6px 18px rgba(255,190,244,.5);
+  transition:.4s;
+}
+.back-home:hover{
+  transform:translateY(-3px);
+  background:#ff9fe6;
+}
+
+h1,h2{text-align:center;color:#333}
+
+.section{
+  background:rgba(255,255,255,0.92);
+  padding:22px;
+  margin:20px auto;
+  max-width:680px;
+  border-radius:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.15);
+}
+
+label{display:block;margin-top:12px}
+
+input,select,textarea,button{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-family:'Cairo', sans-serif;
+}
+
+button{
+  background:#ffbef4;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+}
+button:hover{background:#ff9fe6}
+
+/* النتيجة */
+.result{
+  margin-top:15px;
+  padding:15px;
+  background:#fff0fa;
+  border-radius:12px;
+  border:1px solid #ffc7e8;
+}
+
+/* جدول النتائج */
+.result-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  animation:fadeTable .6s ease;
+}
+.result-table th,
+.result-table td{
+  padding:10px;
+  text-align:center;
+  border-bottom:1px solid #ffd6eb;
+}
+.result-table th{
+  background:#ffbef4;
+  font-weight:700;
+}
+@keyframes fadeTable{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
 </head>
+
 <body>
 
-<h1>تصحيح تقارير المشرفة الافضل والحلوة رموو</h1>
+<a href="index.html" class="back-home">← الرجوع للصفحة الرئيسية</a>
+
+<div class="page">
+
+<h1>تصحيح تقارير المشرفة الأفضل والحلوة 🤍</h1>
 
 <div class="section">
-  <h2>🫶​  عدد الوحدات</h2>
+<h2>📊 التوزيع</h2>
 
-  <label>المنطقة</label>
-  <select id="region">
-    <option value="">-- أحبك --</option>
-    <option value="SB">ساندي / بوليتو</option>
-    <option value="LS">لوس سانتوس</option>
-  </select>
+<label>المنطقة</label>
+<select id="region">
+  <option value="">-- اختاري المنطقة --</option>
+  <option value="LS">لوس سانتوس</option>
+  <option value="SB">ساندي / بوليتو</option>
+</select>
 
-  <label>عدد الوحدات</label>
-  <input type="number" id="units" placeholder="مهيم فيك" />
+<label>عدد الوحدات</label>
+<input type="number" id="units" />
 
-  <button onclick="calculate()">تصحيح التقرير</button>
-
-  <div id="reportResult" class="result"></div>
+<button onclick="calculate()">تصحيح التقرير</button>
+<div id="reportResult" class="result"></div>
 </div>
 
 <div class="section">
-  <h2>🩷​ فحص التكرار</h2>
-  <p>انسخ التقرير أو البيانات هنا، وكل سطر يمثل عنصر واحد</p>
-  <textarea id="dupInput" rows="6" placeholder="أعشقك"></textarea>
-  <button onclick="checkDuplicates()">فحص التكرار</button>
-  <div id="dupResult" class="result"></div>
+<h2>🔁 فحص التكرار</h2>
+<textarea id="dupInput" rows="6"></textarea>
+<button onclick="checkDuplicates()">فحص التكرار</button>
+<div id="dupResult" class="result"></div>
+</div>
+
 </div>
 
 <script>
+/* أنيميشن الخروج */
+document.querySelectorAll("a").forEach(link=>{
+  link.addEventListener("click",e=>{
+    const href=link.getAttribute("href");
+    if(href && !href.startsWith("#")){
+      e.preventDefault();
+      document.body.style.opacity=0;
+      setTimeout(()=>location.href=href,400);
+    }
+  });
+});
+
+/* ===== التوزيع (كما هو) ===== */
 const data = {
   LS: {
     1:{"لام 1":0,"لام 2":1,"لام 3":0,"لام 4":0,"لام 5":0,"فرسان":0},
@@ -98,6 +182,7 @@ const data = {
     19:{"لام 1":4,"لام 2":4,"لام 3":3,"لام 4":4,"لام 5":2,"فرسان":2},
     20:{"لام 1":4,"لام 2":4,"لام 3":3,"لام 4":4,"لام 5":2,"فرسان":3}
   },
+
   SB: {
     1:{"سين 1":1,"سين":0,"باء 1":0,"باء":0,"جيم 1":0,"جيم 2":0},
     2:{"سين 1":1,"سين":0,"باء 1":1,"باء":0,"جيم 1":0,"جيم 2":0},
@@ -115,74 +200,48 @@ const data = {
     14:{"سين 1":3,"سين":3,"باء 1":3,"باء":2,"جيم 1":3,"جيم 2":0},
     15:{"سين 1":3,"سين":3,"باء 1":3,"باء":3,"جيم 1":3,"جيم 2":0},
     16:{"سين 1":4,"سين":3,"باء 1":3,"باء":3,"جيم 1":3,"جيم 2":0},
-    17:{"سين 1":4,"سين":4,"باء 1":3,"باء 3":3,"جيم 1":3,"جيم 2":0},
-    18:{"سين 1":4,"سين":4,"باء 1":3,"باء 4":4,"جيم 1":3,"جيم 2":0},
-    19:{"سين 1":4,"سين":4,"باء 1":3,"باء 4":4,"جيم 1":3,"جيم 2":1},
-    20:{"سين 1":4,"سين":4,"باء 1":3,"باء 4":4,"جيم 1":3,"جيم 2":2},
-    21:{"سين 1":4,"سين":4,"باء 1":3,"باء 4":4,"جيم 1":3,"جيم 2":3},
-    22:{"سين 1":5,"سين":4,"باء 1":3,"باء 4":4,"جيم 1":3,"جيم 2":3},
-    23:{"سين 1":5,"سين":4,"باء 1":4,"باء 4":4,"جيم 1":3,"جيم 2":3},
-    24:{"سين 1":5,"سين":5,"باء 1":4,"باء 4":4,"جيم 1":3,"جيم 2":3},
-    25:{"سين 1":5,"سين":5,"باء 1":4,"باء 4":4,"جيم 1":4,"جيم 2":3},
-    26:{"سين 1":5,"سين":5,"باء 1":4,"باء 5":5,"جيم 1":4,"جيم 2":3},
-    27:{"سين 1":5,"سين":5,"باء 1":4,"باء 5":5,"جيم 1":4,"جيم 2":4},
-    28:{"سين 1":6,"سين":5,"باء 1":4,"باء 5":5,"جيم 1":4,"جيم 2":4},
-    29:{"سين 1":6,"سين":5,"باء 1":5,"باء 5":5,"جيم 1":4,"جيم 2":4},
-    30:{"سين 1":6,"سين":6,"باء 1":5,"باء 5":5,"جيم 1":4,"جيم 2":4}
+    17:{"سين 1":4,"سين":4,"باء 1":3,"باء":3,"جيم 1":3,"جيم 2":0},
+    18:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":0},
+    19:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":1},
+    20:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":2},
+    21:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":3},
+    22:{"سين 1":5,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":3},
+    23:{"سين 1":5,"سين":4,"باء 1":4,"باء":4,"جيم 1":3,"جيم 2":3},
+    24:{"سين 1":5,"سين":5,"باء 1":4,"باء":4,"جيم 1":3,"جيم 2":3},
+    25:{"سين 1":5,"سين":5,"باء 1":4,"باء":4,"جيم 1":4,"جيم 2":3},
+    26:{"سين 1":5,"سين":5,"باء 1":4,"باء":5,"جيم 1":4,"جيم 2":3},
+    27:{"سين 1":5,"سين":5,"باء 1":4,"باء":5,"جيم 1":4,"جيم 2":4},
+    28:{"سين 1":6,"سين":5,"باء 1":4,"باء":5,"جيم 1":4,"جيم 2":4},
+    29:{"سين 1":6,"سين":5,"باء 1":5,"باء":5,"جيم 1":4,"جيم 2":4},
+    30:{"سين 1":6,"سين":6,"باء 1":5,"باء":5,"جيم 1":4,"جيم 2":4}
   }
 };
+function calculate(){
+  const r=document.getElementById("region").value;
+  const u=document.getElementById("units").value;
+  const d=document.getElementById("reportResult");
 
-function calculate() {
-  const region = document.getElementById('region').value;
-  const units = Number(document.getElementById('units').value);
-  const resultDiv = document.getElementById('reportResult');
+  if(!r||!u){d.innerText="⚠️ الرجاء إدخال البيانات";return;}
+  if(!data[r]||!data[r][u]){d.innerText="❌ لا توجد بيانات";return;}
 
-  if (!region || !units) {
-    resultDiv.innerText = '⚠️ الرجاء اختيار المنطقة وكتابة عدد الوحدات';
-    return;
+  let html=`<table class="result-table"><tr><th>الموقع</th><th>العدد</th></tr>`;
+  for(const k in data[r][u]){
+    html+=`<tr><td>${k}</td><td>${data[r][u][k]}</td></tr>`;
   }
-
-  const regionData = data[region];
-
-  if (!regionData || !regionData[units]) {
-    resultDiv.innerText = '❌ لا توجد بيانات للوحدات المحددة.';
-    return;
-  }
-
-  let output = (region === 'LS' ? 'لوس سانتوس' : 'ساندي / بوليتو') + '\n';
-  const distribution = regionData[units];
-
-  for (const site in distribution) {
-    output += site + ' : ' + distribution[site] + '\n';
-  }
-
-  resultDiv.innerText = output;
+  html+=`</table>`;
+  d.innerHTML=html;
+  d.scrollIntoView({behavior:"smooth"});
 }
 
-function checkDuplicates() {
-  const text = document.getElementById('dupInput').value.trim();
-  const resultDiv = document.getElementById('dupResult');
+function checkDuplicates(){
+  const t=document.getElementById("dupInput").value.trim();
+  const d=document.getElementById("dupResult");
+  if(!t){d.innerText="⚠️ أدخلي نص";return;}
 
-  if (!text) {
-    resultDiv.innerHTML = '⚠️ الرجاء إدخال نص';
-    return;
-  }
-
-  const lines = text.split(/\n+/);
-  const seen = new Set();
-  const duplicates = new Set();
-
-  lines.forEach(line => {
-    const l = line.trim();
-    if (seen.has(l)) duplicates.add(l);
-    else seen.add(l);
-  });
-
-  if (duplicates.size === 0) {
-    resultDiv.innerHTML = '✅ لا يوجد تكرار';
-  } else {
-    resultDiv.innerHTML = '❌ يوجد تكرار في:\n' + Array.from(duplicates).join('\n');
-  }
+  const l=t.split(/\n+/),s=new Set(),dup=new Set();
+  l.forEach(x=>s.has(x)?dup.add(x):s.add(x));
+  d.innerText=dup.size?"❌ يوجد تكرار:\n"+[...dup].join("\n"):"✅ لا يوجد تكرار";
+  d.scrollIntoView({behavior:"smooth"});
 }
 </script>
 
