@@ -320,5 +320,56 @@ function createStar(){
 skipBtn.onclick=endSecret;
 </script>
 
+<!-- رسالة رموو -->
+<div id="rmooMsg">هذا الموقع مسويه عشاانك يارموو 🤍</div>
+
+<style>
+#rmooMsg{
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  background:#ffeff8;
+  color:#ff5fa2;
+  padding:14px 22px;
+  border-radius:18px;
+  font-weight:600;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  opacity:0;
+  transform:translateY(20px);
+  animation:rmooIn 1s ease forwards;
+  z-index:9999;
+}
+@keyframes rmooIn{
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
+
+<script>
+setTimeout(()=>{
+  const msg=document.getElementById('rmooMsg');
+  if(msg){
+    msg.style.opacity='0';
+    msg.style.transform='translateY(20px)';
+  }
+},5000);
+</script>
+
+<div class="signature">صُنع بحب 🤍 لرموو</div>
+
+<style>
+.signature{
+  position:fixed;
+  bottom:12px;
+  left:12px;
+  font-size:11px;
+  color:#ff9fcf;
+  opacity:0.7;
+  pointer-events:none;
+  z-index:50;
+}
+</style>
+
+
+
 </body>
 </html>
