@@ -245,5 +245,92 @@ function checkDuplicates(){
 }
 </script>
 
+  <!-- مفاجأة القلوب -->
+<style>
+@keyframes loveFloat{
+  from{opacity:0; transform:translateY(0) scale(0.8)}
+  20%{opacity:1}
+  to{opacity:0; transform:translateY(-110vh) scale(1)}
+}
+
+@keyframes msgPop{
+  from{opacity:0; transform:translate(-50%,20px) scale(0.95)}
+  to{opacity:1; transform:translate(-50%,0) scale(1)}
+}
+</style>
+
+<script>
+let loveMode=false;
+let heartCount=0;
+let stopTimer=null;
+
+document.addEventListener('keydown',e=>{
+  // تفعيل الوضع السري
+  if(e.shiftKey && e.key === 'Enter'){
+    loveMode=true;
+    heartCount=0;
+    clearTimeout(stopTimer);
+    removeLoveMessage();
+    return;
+  }
+
+  // توليد القلوب (غير محدود)
+  if(loveMode && e.key === 'Enter'){
+    e.preventDefault();
+
+    heartCount++;
+    spawnLoveHeart();
+
+    clearTimeout(stopTimer);
+    stopTimer=setTimeout(()=>{
+      endLoveMode();
+    },2000);
+  }
+});
+
+function spawnLoveHeart(){
+  const h=document.createElement('div');
+  h.textContent='❤️';
+  h.style.position='fixed';
+  h.style.bottom='-30px';
+  h.style.left=Math.random()*90+'vw';
+  h.style.fontSize='22px';
+  h.style.animation='loveFloat 4s ease forwards';
+  h.style.zIndex='9999';
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),4000);
+}
+
+function endLoveMode(){
+  loveMode=false;
+  showLoveMessage();
+}
+
+function showLoveMessage(){
+  const msg=document.createElement('div');
+  msg.className='love-msg';
+  msg.innerText='انا احبك كثر القلوب واكثرر 🤍';
+  msg.style.position='fixed';
+  msg.style.bottom='90px';
+  msg.style.left='50%';
+  msg.style.transform='translateX(-50%)';
+  msg.style.background='#fff';
+  msg.style.padding='18px 30px';
+  msg.style.borderRadius='30px';
+  msg.style.color='#ff5fa2';
+  msg.style.fontSize='20px';
+  msg.style.fontWeight='700';
+  msg.style.boxShadow='0 15px 40px rgba(0,0,0,0.25)';
+  msg.style.animation='msgPop 1.2s ease forwards';
+  msg.style.zIndex='9999';
+  document.body.appendChild(msg);
+}
+
+function removeLoveMessage(){
+  document.querySelectorAll('.love-msg').forEach(e=>e.remove());
+}
+</script>
+
+
 </body>
 </html>
