@@ -12,7 +12,7 @@ body{
   min-height:100vh;
   font-family:'Cairo',sans-serif;
   background:#000;
-  overflow:hidden;
+  overflow:auto; /* ✅ مهم */
 }
 
 /* شاشة الهدية */
@@ -81,18 +81,9 @@ h1{color:#ff5fa2;margin-bottom:10px}
   box-shadow:0 12px 30px rgba(0,0,0,0.18);
   opacity:0;
   transform:translateY(30px) scale(0.96);
-  animation:imgIn 1s ease forwards;
 }
 
-.memories img:nth-child(1){animation-delay:.2s}
-.memories img:nth-child(2){animation-delay:.4s}
-.memories img:nth-child(3){animation-delay:.6s}
-.memories img:nth-child(4){animation-delay:.8s}
-.memories img:nth-child(5){animation-delay:1s}
-.memories img:nth-child(6){animation-delay:1.2s}
-.memories img:nth-child(7){animation-delay:1.4s}
-.memories img:nth-child(8){animation-delay:1.6s}
-
+/* أنميشن الصور */
 @keyframes imgIn{
   to{opacity:1;transform:translateY(0) scale(1)}
 }
@@ -113,6 +104,11 @@ h1{color:#ff5fa2;margin-bottom:10px}
   padding:12px 28px;
   border-radius:999px;
   font-weight:600;
+  transition:.3s;
+}
+.back:hover{
+  background:#ff9fe6;
+  transform:scale(1.05);
 }
 
 .signature{
@@ -140,19 +136,18 @@ h1{color:#ff5fa2;margin-bottom:10px}
     <div class="subtitle">مو صور… ذكريات بيني وبينك</div>
 
     <div class="memories">
-<img src="img1.webp">
-<img src="img2.webp">
-<img src="img3.webp">
-<img src="img4.webp">
-<img src="img5.webp">
-<img src="img6.webp">
-<img src="img7.webp">
-<img src="img8.webp">
-
+      <img src="img1.webp">
+      <img src="img2.webp">
+      <img src="img3.webp">
+      <img src="img4.webp">
+      <img src="img5.webp">
+      <img src="img6.webp">
+      <img src="img7.webp">
+      <img src="img8.webp">
     </div>
 
     <div class="note">
-      كل صورة هنا تحكي قصة 🤍  
+      كل صورة هنا تحكي قصة 🤍<br>
       وكل قصة بيني وبينك.
     </div>
 
@@ -179,7 +174,13 @@ document.getElementById('giftBtn').onclick=()=>{
   content.style.opacity='1';
   content.style.transform='scale(1)';
 
+  song.volume = 0.7;
   song.play();
+
+  /* تشغيل أنميشن الصور بعد الفتح */
+  document.querySelectorAll('.memories img').forEach((img,i)=>{
+    img.style.animation = `imgIn 1s ease forwards ${i*0.25}s`;
+  });
 };
 </script>
 
