@@ -152,6 +152,15 @@ a:hover{background:#ff9fe6;transform:scale(1.08)}
   cursor:pointer;
 }
 
+/* تحكم الصوت */
+#volumeControl{
+  margin-top:14px;
+}
+#volumeControl input{
+  width:100%;
+  accent-color:#ff5fa2;
+}
+
 /* الجملة النهائية */
 #finalLove{
   margin-top:18px;
@@ -175,7 +184,7 @@ a:hover{background:#ff9fe6;transform:scale(1.08)}
   100%{text-shadow:0 0 6px rgba(255,95,162,0.4)}
 }
 
-/* زر الهدية المخفي */
+/* زر الهدية */
 #hiddenGiftBtn{
   position:fixed;
   bottom:20px;
@@ -189,53 +198,6 @@ a:hover{background:#ff9fe6;transform:scale(1.08)}
 }
 #hiddenGiftBtn:hover{opacity:1;transform:scale(1.2)}
 
-/* نافذة كلمة السر */
-#passOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:10000;
-}
-#passBox{
-  background:white;
-  padding:30px 40px;
-  border-radius:26px;
-  text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,.3);
-  animation:fadeScale .5s ease;
-}
-@keyframes fadeScale{
-  from{opacity:0;transform:scale(.9)}
-  to{opacity:1;transform:scale(1)}
-}
-#passBox input{
-  width:140px;
-  text-align:center;
-  padding:10px;
-  font-size:18px;
-  border-radius:12px;
-  border:1px solid #ddd;
-}
-#passBox button{
-  margin-top:14px;
-  padding:10px 28px;
-  border:none;
-  border-radius:999px;
-  background:#ffbef4;
-  cursor:pointer;
-}
-.shake{animation:shake .35s}
-@keyframes shake{
-  0%{transform:translateX(0)}
-  25%{transform:translateX(-5px)}
-  50%{transform:translateX(5px)}
-  75%{transform:translateX(-5px)}
-  100%{transform:translateX(0)}
-}
-
 /* التوقيع */
 .signature{
   position:fixed;
@@ -244,7 +206,6 @@ a:hover{background:#ff9fe6;transform:scale(1.08)}
   font-size:11px;
   color:#ff9fcf;
   opacity:.7;
-  pointer-events:none;
 }
 </style>
 </head>
@@ -259,164 +220,21 @@ a:hover{background:#ff9fe6;transform:scale(1.08)}
     <a href="الصفحة الاولى.html">تصحيح تقارير العمليات</a>
     <a href="الصفحة الثانية.html">تقارير المشرفة الحلووة</a>
   </div>
-
   <div id="finalLove" style="display:none;">في النهاية انا أحبك</div>
 </div>
 
-<!-- Secret Mode -->
 <div id="secretOverlay">
   <div id="secretBox">
     <div id="secretText"></div>
     <div id="countdown"></div>
     <button id="skipBtn">SKIP</button>
-  </div>
-</div>
-
-<!-- كلمة السر -->
-<div id="passOverlay">
-  <div id="passBox">
-    <div style="color:#ff5fa2;margin-bottom:10px">كلمة السر 🤍</div>
-    <input type="password" id="passInput" maxlength="4" placeholder="••••">
-    <button onclick="checkGiftPass()">دخول</button>
+    <div id="volumeControl">
+      <input type="range" min="0" max="1" step="0.01" value="0.6" id="volumeRange">
+    </div>
   </div>
 </div>
 
 <div id="hiddenGiftBtn">✨</div>
 
 <audio id="secretSong"><source src="song.mp3"></audio>
-<audio id="ding"><source src="https://assets.mixkit.co/sfx/preview/mixkit-soft-bell-2218.mp3"></audio>
-
-<script>
-/* انتقال الصفحات */
-document.querySelectorAll("a").forEach(link=>{
-  link.onclick=e=>{
-    e.preventDefault();
-    document.body.style.opacity=0;
-    setTimeout(()=>location.href=link.href,400);
-  };
-});
-
-/* Secret Mode */
-const messages=[
-"تراني والله أحبك 🤍 ايووه انتي يا قمري 🌙",
-"انتي اغلى ما املك في حياتي 🤍",
-"انا امووت عليك واغليك 🤍",
-"انتي احلى واجمل وردة في الدنيا وما فيها 🌸",
-"I love you 🤍"
-];
-let time=45,msgIndex=0,interval,spawnInt;
-
-document.addEventListener('keydown',e=>{
-  if(e.shiftKey&&(e.key==='7'||e.key==='&')&&secretOverlay.style.display!=='flex'){
-    startSecret();
-  }
-});
-function startSecret(){
-  secretOverlay.style.display='flex';
-  bg.classList.add('blur');
-  ding.play();
-  secretSong.currentTime=0;
-  secretSong.play();
-  updateMessage();
-  countdown.innerText=`${time}s`;
-  interval=setInterval(tick,1000);
-  spawnInt=setInterval(()=>{createHeart();createStar();},600);
-}
-function updateMessage(){
-  secretText.classList.remove('fade-text');
-  void secretText.offsetWidth;
-  secretText.innerHTML=messages[msgIndex];
-  secretText.classList.add('fade-text');
-}
-function tick(){
-  time--;
-  countdown.innerText=`${time}s`;
-  if(time%10===0 && msgIndex<messages.length-1){msgIndex++;updateMessage();}
-  if(time<=0) endSecret();
-}
-function endSecret(){
-  clearInterval(interval);
-  clearInterval(spawnInt);
-  secretOverlay.style.display='none';
-  bg.classList.remove('blur');
-  secretSong.pause();secretSong.currentTime=0;
-  finalLove.style.display='flex';
-  time=45;msgIndex=0;
-}
-function createHeart(){
-  const h=document.createElement('div');
-  h.className='css-heart';
-  h.style.left=Math.random()*100+'vw';
-  secretOverlay.appendChild(h);
-  setTimeout(()=>h.remove(),7000);
-}
-function createStar(){
-  const s=document.createElement('div');
-  s.className='star';
-  s.innerText='✨';
-  s.style.left=Math.random()*100+'vw';
-  secretOverlay.appendChild(s);
-  setTimeout(()=>s.remove(),5000);
-}
-skipBtn.onclick=endSecret;
-
-/* زر الهدية + كلمة السر */
-hiddenGiftBtn.onclick=()=>{
-  passOverlay.style.display="flex";
-  passInput.value="";
-  passInput.focus();
-};
-passOverlay.onclick=e=>{
-  if(e.target===passOverlay) passOverlay.style.display="none";
-};
-function checkGiftPass(){
-  if(passInput.value==="0204"){
-    document.body.style.opacity=0;
-    setTimeout(()=>location.href="ذكرياتنا.html",400);
-  }else{
-    passBox.classList.remove("shake");
-    void passBox.offsetWidth;
-    passBox.classList.add("shake");
-  }
-}
-</script>
-
-<div class="signature">صُنع بحب 🤍 لرموو</div>
-
-<!-- رسالة رموو -->
-<div id="rmooMsg">هذا الموقع مسويه عشانك يارموو 🤍</div>
-
-<style>
-#rmooMsg{
-  position:fixed;
-  bottom:25px;
-  right:25px;
-  background:#ffeff8;
-  color:#ff5fa2;
-  padding:14px 22px;
-  border-radius:18px;
-  font-weight:600;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-  opacity:0;
-  transform:translateY(20px);
-  animation:rmooIn 1s ease forwards;
-  z-index:9999;
-}
-@keyframes rmooIn{
-  to{opacity:1;transform:translateY(0)}
-}
-</style>
-
-<script>
-setTimeout(()=>{
-  const msg=document.getElementById('rmooMsg');
-  if(msg){
-    msg.style.opacity='0';
-    msg.style.transform='translateY(20px)';
-  }
-},5000);
-</script>
-
-
-</body>
-</html>
+<audio id="ding"><source src="https://assets.mixkit.co/sfx/preview/mix
