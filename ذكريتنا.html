@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>ذكرياتنا 🤍</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Cairo',sans-serif;
+  background:#000;
+  overflow:hidden;
+}
+
+/* شاشة الهدية */
+#giftScreen{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  transition:opacity 1.2s ease;
+}
+
+#giftBtn{
+  background:none;
+  border:2px solid #ff9fcf;
+  color:#ff9fcf;
+  padding:18px 40px;
+  border-radius:50px;
+  font-size:20px;
+  cursor:pointer;
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);opacity:.7}
+  50%{transform:scale(1.05);opacity:1}
+  100%{transform:scale(1);opacity:.7}
+}
+
+/* المحتوى */
+#content{
+  opacity:0;
+  transform:scale(0.96);
+  transition:opacity 1.4s ease, transform 1.4s ease;
+  background:linear-gradient(180deg,#fff5fb,#ffe6f3);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.wrap{
+  max-width:900px;
+  padding:30px 20px 60px;
+  text-align:center;
+}
+
+h1{color:#ff5fa2;margin-bottom:10px}
+.subtitle{color:#777;margin-bottom:30px}
+
+.memories{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:22px;
+}
+
+.memories img{
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  background:#fff;
+  padding:10px;
+  border-radius:22px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.18);
+  opacity:0;
+  transform:translateY(30px) scale(0.96);
+  animation:imgIn 1s ease forwards;
+}
+
+.memories img:nth-child(1){animation-delay:.2s}
+.memories img:nth-child(2){animation-delay:.4s}
+.memories img:nth-child(3){animation-delay:.6s}
+.memories img:nth-child(4){animation-delay:.8s}
+.memories img:nth-child(5){animation-delay:1s}
+.memories img:nth-child(6){animation-delay:1.2s}
+.memories img:nth-child(7){animation-delay:1.4s}
+.memories img:nth-child(8){animation-delay:1.6s}
+
+@keyframes imgIn{
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+.note{
+  margin-top:35px;
+  font-size:18px;
+  color:#555;
+  line-height:1.8;
+}
+
+.back{
+  margin-top:30px;
+  display:inline-block;
+  text-decoration:none;
+  background:#ffbef4;
+  color:#333;
+  padding:12px 28px;
+  border-radius:999px;
+  font-weight:600;
+}
+
+.signature{
+  position:fixed;
+  bottom:12px;
+  left:12px;
+  font-size:11px;
+  color:#ff9fcf;
+  opacity:0.7;
+}
+</style>
+</head>
+
+<body>
+
+<!-- شاشة الهدية -->
+<div id="giftScreen">
+  <button id="giftBtn">افتح الهدية 🎁</button>
+</div>
+
+<!-- المحتوى -->
+<div id="content">
+  <div class="wrap">
+    <h1>أشياء ما يشوفها إلا قلبك 🤍</h1>
+    <div class="subtitle">مو صور… ذكريات بيني وبينك</div>
+
+    <div class="memories">
+      <img src="images/img1.webp">
+      <img src="images/img2.webp">
+      <img src="images/img3.webp">
+      <img src="images/img4.webp">
+      <img src="images/img5.webp">
+      <img src="images/img6.webp">
+      <img src="images/img7.webp">
+      <img src="images/img8.webp">
+    </div>
+
+    <div class="note">
+      كل صورة هنا تحكي قصة 🤍  
+      وكل قصة بيني وبينك.
+    </div>
+
+    <a href="index.html" class="back">رجوع</a>
+  </div>
+</div>
+
+<div class="signature">صُنع بحب 🤍</div>
+
+<!-- الأغنية -->
+<audio id="song" loop>
+  <source src="song2.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+document.getElementById('giftBtn').onclick=()=>{
+  const gift=document.getElementById('giftScreen');
+  const content=document.getElementById('content');
+  const song=document.getElementById('song');
+
+  gift.style.opacity='0';
+  setTimeout(()=>gift.style.display='none',1200);
+
+  content.style.opacity='1';
+  content.style.transform='scale(1)';
+
+  song.play();
+};
+</script>
+
+</body>
+</html>
