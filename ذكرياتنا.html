@@ -12,7 +12,7 @@ body{
   min-height:100vh;
   font-family:'Cairo',sans-serif;
   background:#000;
-  overflow:auto; /* ✅ مهم */
+  overflow:auto;
 }
 
 /* شاشة الهدية */
@@ -58,7 +58,7 @@ body{
 
 .wrap{
   max-width:900px;
-  padding:30px 20px 60px;
+  padding:30px 20px 80px;
   text-align:center;
 }
 
@@ -73,7 +73,6 @@ h1{color:#ff5fa2;margin-bottom:10px}
 
 .memories img{
   width:100%;
-  height:auto;
   object-fit:contain;
   background:#fff;
   padding:10px;
@@ -83,7 +82,6 @@ h1{color:#ff5fa2;margin-bottom:10px}
   transform:translateY(30px) scale(0.96);
 }
 
-/* أنميشن الصور */
 @keyframes imgIn{
   to{opacity:1;transform:translateY(0) scale(1)}
 }
@@ -106,10 +104,7 @@ h1{color:#ff5fa2;margin-bottom:10px}
   font-weight:600;
   transition:.3s;
 }
-.back:hover{
-  background:#ff9fe6;
-  transform:scale(1.05);
-}
+.back:hover{background:#ff9fe6;transform:scale(1.05)}
 
 .signature{
   position:fixed;
@@ -118,6 +113,21 @@ h1{color:#ff5fa2;margin-bottom:10px}
   font-size:11px;
   color:#ff9fcf;
   opacity:0.7;
+}
+
+/* التحكم بالصوت */
+#audioControl{
+  position:fixed;
+  bottom:16px;
+  right:16px;
+  background:#fff;
+  padding:10px 14px;
+  border-radius:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  font-size:12px;
+}
+#audioControl input{
+  width:90px;
 }
 </style>
 </head>
@@ -144,6 +154,10 @@ h1{color:#ff5fa2;margin-bottom:10px}
       <img src="img6.webp">
       <img src="img7.webp">
       <img src="img8.webp">
+      <img src="img9.webp">
+      <img src="img10.webp">
+      <img src="img11.webp">
+      <img src="img12.webp">
     </div>
 
     <div class="note">
@@ -157,6 +171,11 @@ h1{color:#ff5fa2;margin-bottom:10px}
 
 <div class="signature">صُنع بحب 🤍</div>
 
+<!-- التحكم بالصوت -->
+<div id="audioControl" style="display:none;">
+  🔊 <input type="range" min="0" max="1" step="0.01" value="0.85" id="volumeRange">
+</div>
+
 <!-- الأغنية -->
 <audio id="song" loop>
   <source src="song2.mp3" type="audio/mpeg">
@@ -167,6 +186,7 @@ document.getElementById('giftBtn').onclick=()=>{
   const gift=document.getElementById('giftScreen');
   const content=document.getElementById('content');
   const song=document.getElementById('song');
+  const control=document.getElementById('audioControl');
 
   gift.style.opacity='0';
   setTimeout(()=>gift.style.display='none',1200);
@@ -174,13 +194,17 @@ document.getElementById('giftBtn').onclick=()=>{
   content.style.opacity='1';
   content.style.transform='scale(1)';
 
-  song.volume = 0.7;
+  song.volume=0.85;
   song.play();
+  control.style.display='block';
 
-  /* تشغيل أنميشن الصور بعد الفتح */
   document.querySelectorAll('.memories img').forEach((img,i)=>{
-    img.style.animation = `imgIn 1s ease forwards ${i*0.25}s`;
+    img.style.animation=`imgIn 1s ease forwards ${i*0.25}s`;
   });
+};
+
+document.getElementById('volumeRange').oninput=e=>{
+  document.getElementById('song').volume=e.target.value;
 };
 </script>
 
