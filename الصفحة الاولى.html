@@ -331,6 +331,21 @@ function removeLoveMessage(){
 }
 </script>
 
+<audio id="bgSong" loop>
+  <source src="song3.mp3" type="audio/mpeg">
+</audio>
+
+<div id="bgControl">🎵</div>
+
+<script>
+const bgSong=document.getElementById('bgSong');
+const btn=document.getElementById('bgControl');
+
+bgSong.volume=0.70;
+bgSong.play().catch(()=>{});
+
+btn.onclick=()=>bgSong.paused?bgSong.play():bgSong.pause();
+</script>
 
 </body>
 </html>
