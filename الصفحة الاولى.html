@@ -16,19 +16,25 @@ body{
   background:url('https://i.ibb.co/Fk4VVZrC/Beige-Red-Minimalist-Happy-Valentine-s-Day-Love-You-Card-1.png')
   no-repeat center center fixed;
   background-size:cover;
-  transition:opacity .4s;
 }
 
-/* أنيميشن دخول الصفحة */
-.page{
-  animation:pageIn .7s ease;
+/* زر الريست الصغير */
+.reset-btn{
+  position:fixed;
+  top:10px;
+  left:10px;
+  width:30px;
+  height:30px;
+  border-radius:8px;
+  background:#ffbef4;
+  border:none;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(255,190,244,.5);
 }
-@keyframes pageIn{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:translateY(0)}
-}
+.reset-btn:hover{background:#ff9fe6}
 
-/* زر الرجوع */
 .back-home{
   display:block;
   width:fit-content;
@@ -39,23 +45,29 @@ body{
   text-decoration:none;
   border-radius:25px;
   font-weight:700;
-  box-shadow:0 6px 18px rgba(255,190,244,.5);
-  transition:.4s;
-}
-.back-home:hover{
-  transform:translateY(-3px);
-  background:#ff9fe6;
 }
 
 h1,h2{text-align:center;color:#333}
 
+.wrapper{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
 .section{
   background:rgba(255,255,255,0.92);
   padding:22px;
-  margin:20px auto;
-  max-width:680px;
+  max-width:480px;
+  width:100%;
   border-radius:18px;
   box-shadow:0 12px 30px rgba(0,0,0,.15);
+}
+
+.section-wide{
+  max-width:760px;
+  margin:30px auto;
 }
 
 label{display:block;margin-top:12px}
@@ -74,11 +86,9 @@ button{
   border:none;
   font-weight:700;
   cursor:pointer;
-  transition:.3s;
 }
 button:hover{background:#ff9fe6}
 
-/* النتيجة */
 .result{
   margin-top:15px;
   padding:15px;
@@ -87,12 +97,10 @@ button:hover{background:#ff9fe6}
   border:1px solid #ffc7e8;
 }
 
-/* جدول النتائج */
 .result-table{
   width:100%;
   border-collapse:collapse;
   margin-top:10px;
-  animation:fadeTable .6s ease;
 }
 .result-table th,
 .result-table td{
@@ -100,24 +108,30 @@ button:hover{background:#ff9fe6}
   text-align:center;
   border-bottom:1px solid #ffd6eb;
 }
-.result-table th{
-  background:#ffbef4;
-  font-weight:700;
+.result-table th{background:#ffbef4}
+
+/* ===== القلوب ===== */
+@keyframes loveFloat{
+  from{opacity:0;transform:translateY(0) scale(.8)}
+  20%{opacity:1}
+  to{opacity:0;transform:translateY(-110vh) scale(1)}
 }
-@keyframes fadeTable{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
+@keyframes msgPop{
+  from{opacity:0;transform:translate(-50%,20px) scale(.95)}
+  to{opacity:1;transform:translate(-50%,0) scale(1)}
 }
 </style>
 </head>
 
 <body>
 
+<button class="reset-btn" onclick="resetAll()" title="إعادة تعيين">↺</button>
+
 <a href="index.html" class="back-home">← الرجوع للصفحة الرئيسية</a>
 
-<div class="page">
-
 <h1>تصحيح تقارير المشرفة الأفضل والحلوة 🤍</h1>
+
+<div class="wrapper">
 
 <div class="section">
 <h2>📊 التوزيع</h2>
@@ -130,7 +144,7 @@ button:hover{background:#ff9fe6}
 </select>
 
 <label>عدد الوحدات</label>
-<input type="number" id="units" />
+<input type="number" id="units">
 
 <button onclick="calculate()">تصحيح التقرير</button>
 <div id="reportResult" class="result"></div>
@@ -145,145 +159,184 @@ button:hover{background:#ff9fe6}
 
 </div>
 
+<div class="section section-wide">
+<h2>📑 مقارنة تقريرين</h2>
+
+<label>التقرير القديم</label>
+<textarea id="oldReport" rows="10"></textarea>
+
+<label>التقرير الجديد</label>
+<textarea id="newReport" rows="10"></textarea>
+
+<button onclick="runCompare()">قارن</button>
+<div id="compareResult" class="result"></div>
+</div>
+
 <script>
-/* أنيميشن الخروج */
-document.querySelectorAll("a").forEach(link=>{
-  link.addEventListener("click",e=>{
-    const href=link.getAttribute("href");
-    if(href && !href.startsWith("#")){
-      e.preventDefault();
-      document.body.style.opacity=0;
-      setTimeout(()=>location.href=href,400);
-    }
-  });
-});
-
-/* ===== التوزيع (كما هو) ===== */
-const data = {
-  LS: {
-    1:{"لام 1":0,"لام 2":1,"لام 3":0,"لام 4":0,"لام 5":0,"فرسان":0},
-    2:{"لام 1":0,"لام 2":1,"لام 3":0,"لام 4":1,"لام 5":0,"فرسان":0},
-    3:{"لام 1":0,"لام 2":1,"لام 3":1,"لام 4":1,"لام 5":0,"فرسان":0},
-    4:{"لام 1":1,"لام 2":1,"لام 3":1,"لام 4":1,"لام 5":0,"فرسان":0},
-    5:{"لام 1":1,"لام 2":1,"لام 3":1,"لام 4":1,"لام 5":0,"فرسان":1},
-    6:{"لام 1":1,"لام 2":2,"لام 3":1,"لام 4":1,"لام 5":0,"فرسان":1},
-    7:{"لام 1":1,"لام 2":2,"لام 3":1,"لام 4":2,"لام 5":0,"فرسان":1},
-    8:{"لام 1":1,"لام 2":2,"لام 3":2,"لام 4":2,"لام 5":0,"فرسان":1},
-    9:{"لام 1":2,"لام 2":2,"لام 3":2,"لام 4":2,"لام 5":0,"فرسان":1},
-    10:{"لام 1":2,"لام 2":3,"لام 3":2,"لام 4":2,"لام 5":0,"فرسان":1},
-    11:{"لام 1":2,"لام 2":3,"لام 3":2,"لام 4":3,"لام 5":0,"فرسان":1},
-    12:{"لام 1":3,"لام 2":3,"لام 3":2,"لام 4":3,"لام 5":0,"فرسان":1},
-    13:{"لام 1":3,"لام 2":3,"لام 3":2,"لام 4":3,"لام 5":1,"فرسان":1},
-    14:{"لام 1":3,"لام 2":3,"لام 3":2,"لام 4":3,"لام 5":1,"فرسان":2},
-    15:{"لام 1":3,"لام 2":4,"لام 3":2,"لام 4":3,"لام 5":1,"فرسان":2},
-    16:{"لام 1":3,"لام 2":4,"لام 3":2,"لام 4":4,"لام 5":1,"فرسان":2},
-    17:{"لام 1":3,"لام 2":4,"لام 3":3,"لام 4":4,"لام 5":1,"فرسان":2},
-    18:{"لام 1":4,"لام 2":4,"لام 3":3,"لام 4":4,"لام 5":1,"فرسان":2},
-    19:{"لام 1":4,"لام 2":4,"لام 3":3,"لام 4":4,"لام 5":2,"فرسان":2},
-    20:{"لام 1":4,"لام 2":4,"لام 3":3,"لام 4":4,"لام 5":2,"فرسان":3}
-  },
-
-  SB: {
-    1:{"سين 1":1,"سين":0,"باء 1":0,"باء":0,"جيم 1":0,"جيم 2":0},
-    2:{"سين 1":1,"سين":0,"باء 1":1,"باء":0,"جيم 1":0,"جيم 2":0},
-    3:{"سين 1":1,"سين":1,"باء 1":1,"باء":0,"جيم 1":0,"جيم 2":0},
-    4:{"سين 1":1,"سين":1,"باء 1":1,"باء":0,"جيم 1":1,"جيم 2":0},
-    5:{"سين 1":1,"سين":1,"باء 1":1,"باء":1,"جيم 1":1,"جيم 2":0},
-    6:{"سين 1":2,"سين":1,"باء 1":1,"باء":1,"جيم 1":1,"جيم 2":0},
-    7:{"سين 1":2,"سين":1,"باء 1":2,"باء":1,"جيم 1":1,"جيم 2":0},
-    8:{"سين 1":2,"سين":2,"باء 1":2,"باء":1,"جيم 1":1,"جيم 2":0},
-    9:{"سين 1":2,"سين":2,"باء 1":2,"باء":1,"جيم 1":2,"جيم 2":0},
-    10:{"سين 1":2,"سين":2,"باء 1":2,"باء":2,"جيم 1":2,"جيم 2":0},
-    11:{"سين 1":3,"سين":2,"باء 1":2,"باء":2,"جيم 1":2,"جيم 2":0},
-    12:{"سين 1":3,"سين":2,"باء 1":3,"باء":2,"جيم 1":2,"جيم 2":0},
-    13:{"سين 1":3,"سين":3,"باء 1":3,"باء":2,"جيم 1":2,"جيم 2":0},
-    14:{"سين 1":3,"سين":3,"باء 1":3,"باء":2,"جيم 1":3,"جيم 2":0},
-    15:{"سين 1":3,"سين":3,"باء 1":3,"باء":3,"جيم 1":3,"جيم 2":0},
-    16:{"سين 1":4,"سين":3,"باء 1":3,"باء":3,"جيم 1":3,"جيم 2":0},
-    17:{"سين 1":4,"سين":4,"باء 1":3,"باء":3,"جيم 1":3,"جيم 2":0},
-    18:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":0},
-    19:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":1},
-    20:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":2},
-    21:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":3},
-    22:{"سين 1":5,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":3},
-    23:{"سين 1":5,"سين":4,"باء 1":4,"باء":4,"جيم 1":3,"جيم 2":3},
-    24:{"سين 1":5,"سين":5,"باء 1":4,"باء":4,"جيم 1":3,"جيم 2":3},
-    25:{"سين 1":5,"سين":5,"باء 1":4,"باء":4,"جيم 1":4,"جيم 2":3},
-    26:{"سين 1":5,"سين":5,"باء 1":4,"باء":5,"جيم 1":4,"جيم 2":3},
-    27:{"سين 1":5,"سين":5,"باء 1":4,"باء":5,"جيم 1":4,"جيم 2":4},
-    28:{"سين 1":6,"سين":5,"باء 1":4,"باء":5,"جيم 1":4,"جيم 2":4},
-    29:{"سين 1":6,"سين":5,"باء 1":5,"باء":5,"جيم 1":4,"جيم 2":4},
-    30:{"سين 1":6,"سين":6,"باء 1":5,"باء":5,"جيم 1":4,"جيم 2":4}
-  }
+/* ================== التوزيع ================== */
+const data={
+LS:{
+1:{"لام 1":0,"لام 2":1,"لام 3":0,"لام 4":0,"لام 5":0,"فرسان":0},
+2:{"لام 1":0,"لام 2":1,"لام 3":0,"لام 4":1,"لام 5":0,"فرسان":0},
+3:{"لام 1":0,"لام 2":1,"لام 3":1,"لام 4":1,"لام 5":0,"فرسان":0},
+4:{"لام 1":1,"لام 2":1,"لام 3":1,"لام 4":1,"لام 5":0,"فرسان":0},
+5:{"لام 1":1,"لام 2":1,"لام 3":1,"لام 4":1,"لام 5":0,"فرسان":1},
+6:{"لام 1":1,"لام 2":2,"لام 3":1,"لام 4":1,"لام 5":0,"فرسان":1},
+7:{"لام 1":1,"لام 2":2,"لام 3":1,"لام 4":2,"لام 5":0,"فرسان":1},
+8:{"لام 1":1,"لام 2":2,"لام 3":2,"لام 4":2,"لام 5":0,"فرسان":1},
+9:{"لام 1":2,"لام 2":2,"لام 3":2,"لام 4":2,"لام 5":0,"فرسان":1},
+10:{"لام 1":2,"لام 2":3,"لام 3":2,"لام 4":2,"لام 5":0,"فرسان":1},
+11:{"لام 1":2,"لام 2":3,"لام 3":2,"لام 4":3,"لام 5":0,"فرسان":1},
+12:{"لام 1":3,"لام 2":3,"لام 3":2,"لام 4":3,"لام 5":0,"فرسان":1},
+13:{"لام 1":3,"لام 2":3,"لام 3":2,"لام 4":3,"لام 5":1,"فرسان":1},
+14:{"لام 1":3,"لام 2":3,"لام 3":2,"لام 4":3,"لام 5":1,"فرسان":2},
+15:{"لام 1":3,"لام 2":4,"لام 3":2,"لام 4":3,"لام 5":1,"فرسان":2},
+16:{"لام 1":3,"لام 2":4,"لام 3":2,"لام 4":4,"لام 5":1,"فرسان":2},
+17:{"لام 1":3,"لام 2":4,"لام 3":3,"لام 4":4,"لام 5":1,"فرسان":2},
+18:{"لام 1":4,"لام 2":4,"لام 3":3,"لام 4":4,"لام 5":1,"فرسان":2},
+19:{"لام 1":4,"لام 2":4,"لام 3":3,"لام 4":4,"لام 5":2,"فرسان":2},
+20:{"لام 1":4,"لام 2":4,"لام 3":3,"لام 4":4,"لام 5":2,"فرسان":3}
+},
+SB:{
+1:{"سين 1":1,"سين":0,"باء 1":0,"باء":0,"جيم 1":0,"جيم 2":0},
+2:{"سين 1":1,"سين":0,"باء 1":1,"باء":0,"جيم 1":0,"جيم 2":0},
+3:{"سين 1":1,"سين":1,"باء 1":1,"باء":0,"جيم 1":0,"جيم 2":0},
+4:{"سين 1":1,"سين":1,"باء 1":1,"باء":0,"جيم 1":1,"جيم 2":0},
+5:{"سين 1":1,"سين":1,"باء 1":1,"باء":1,"جيم 1":1,"جيم 2":0},
+6:{"سين 1":2,"سين":1,"باء 1":1,"باء":1,"جيم 1":1,"جيم 2":0},
+7:{"سين 1":2,"سين":1,"باء 1":2,"باء":1,"جيم 1":1,"جيم 2":0},
+8:{"سين 1":2,"سين":2,"باء 1":2,"باء":1,"جيم 1":1,"جيم 2":0},
+9:{"سين 1":2,"سين":2,"باء 1":2,"باء":1,"جيم 1":2,"جيم 2":0},
+10:{"سين 1":2,"سين":2,"باء 1":2,"باء":2,"جيم 1":2,"جيم 2":0},
+11:{"سين 1":3,"سين":2,"باء 1":2,"باء":2,"جيم 1":2,"جيم 2":0},
+12:{"سين 1":3,"سين":2,"باء 1":3,"باء":2,"جيم 1":2,"جيم 2":0},
+13:{"سين 1":3,"سين":3,"باء 1":3,"باء":2,"جيم 1":2,"جيم 2":0},
+14:{"سين 1":3,"سين":3,"باء 1":3,"باء":2,"جيم 1":3,"جيم 2":0},
+15:{"سين 1":3,"سين":3,"باء 1":3,"باء":3,"جيم 1":3,"جيم 2":0},
+16:{"سين 1":4,"سين":3,"باء 1":3,"باء":3,"جيم 1":3,"جيم 2":0},
+17:{"سين 1":4,"سين":4,"باء 1":3,"باء":3,"جيم 1":3,"جيم 2":0},
+18:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":0},
+19:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":1},
+20:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":2},
+21:{"سين 1":4,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":3},
+22:{"سين 1":5,"سين":4,"باء 1":3,"باء":4,"جيم 1":3,"جيم 2":3},
+23:{"سين 1":5,"سين":4,"باء 1":4,"باء":4,"جيم 1":3,"جيم 2":3},
+24:{"سين 1":5,"سين":5,"باء 1":4,"باء":4,"جيم 1":3,"جيم 2":3},
+25:{"سين 1":5,"سين":5,"باء 1":4,"باء":4,"جيم 1":4,"جيم 2":3},
+26:{"سين 1":5,"سين":5,"باء 1":4,"باء":5,"جيم 1":4,"جيم 2":3},
+27:{"سين 1":5,"سين":5,"باء 1":4,"باء":5,"جيم 1":4,"جيم 2":4},
+28:{"سين 1":6,"سين":5,"باء 1":4,"باء":5,"جيم 1":4,"جيم 2":4},
+29:{"سين 1":6,"سين":5,"باء 1":5,"باء":5,"جيم 1":4,"جيم 2":4},
+30:{"سين 1":6,"سين":6,"باء 1":5,"باء":5,"جيم 1":4,"جيم 2":4}
+}
 };
-function calculate(){
-  const r=document.getElementById("region").value;
-  const u=document.getElementById("units").value;
-  const d=document.getElementById("reportResult");
 
+function calculate(){
+  const r=region.value;
+  const u=units.value;
+  const d=reportResult;
   if(!r||!u){d.innerText="⚠️ الرجاء إدخال البيانات";return;}
   if(!data[r]||!data[r][u]){d.innerText="❌ لا توجد بيانات";return;}
-
-  let html=`<table class="result-table"><tr><th>الموقع</th><th>العدد</th></tr>`;
+  let html='<table class="result-table"><tr><th>الموقع</th><th>العدد</th></tr>';
   for(const k in data[r][u]){
-    html+=`<tr><td>${k}</td><td>${data[r][u][k]}</td></tr>`;
+    html+='<tr><td>'+k+'</td><td>'+data[r][u][k]+'</td></tr>';
   }
-  html+=`</table>`;
-  d.innerHTML=html;
-  d.scrollIntoView({behavior:"smooth"});
+  d.innerHTML=html+'</table>';
 }
 
 function checkDuplicates(){
-  const t=document.getElementById("dupInput").value.trim();
-  const d=document.getElementById("dupResult");
+  const t=dupInput.value.trim();
+  const d=dupResult;
   if(!t){d.innerText="⚠️ أدخلي نص";return;}
-
   const l=t.split(/\n+/),s=new Set(),dup=new Set();
   l.forEach(x=>s.has(x)?dup.add(x):s.add(x));
   d.innerText=dup.size?"❌ يوجد تكرار:\n"+[...dup].join("\n"):"✅ لا يوجد تكرار";
-  d.scrollIntoView({behavior:"smooth"});
-}
-</script>
-
-  <!-- مفاجأة القلوب -->
-<style>
-@keyframes loveFloat{
-  from{opacity:0; transform:translateY(0) scale(0.8)}
-  20%{opacity:1}
-  to{opacity:0; transform:translateY(-110vh) scale(1)}
 }
 
-@keyframes msgPop{
-  from{opacity:0; transform:translate(-50%,20px) scale(0.95)}
-  to{opacity:1; transform:translate(-50%,0) scale(1)}
-}
-</style>
+/* ================== مقارنة التقارير ================== */
+const REGIONS={
+LS:["لام 1","لام 2","لام 3","لام 4","لام 5","فرسان"],
+SB:["سين 1","سين","باء 1","باء","جيم 1","جيم 2"]
+};
 
-<script>
+function detectRegion(t){
+  if(t.includes("لوس سانتوس"))return"LS";
+  if(t.includes("ساندي")||t.includes("بوليتو"))return"SB";
+  return null;
+}
+
+function extractUnits(r,reg){
+  const allowed=REGIONS[reg];
+  const lines=r.split(/\n+/);
+  const map={};
+  let current=null;
+  const BLOCKED=[
+    "قيادة","اشراف عام","إشراف عام","مشرف ميداني","العمليات",
+    "نائب العمليات","دعم","الميناء","تسجيل خروج",
+    "وحدات البحث و الإنقاذ","وحدات البحث والإنقاذ",
+    "البحث و الإنقاذ","البحث والإنقاذ"
+  ];
+  for(const raw of lines){
+    const line=raw.trim();
+    if(!line)continue;
+    const clean=line.replace(":","").trim();
+    if(allowed.includes(clean)){current=clean;continue;}
+    if(BLOCKED.includes(clean)){current=null;continue;}
+    if(current&&/^[A-Z]-\d+/i.test(line)){
+      map[line.split(" ")[0]]=current;
+    }
+  }
+  return map;
+}
+
+function runCompare(){
+  const oldT=oldReport.value.trim();
+  const newT=newReport.value.trim();
+  const out=compareResult;
+  if(!oldT||!newT){out.innerText="⚠️ أدخل التقريرين";return;}
+  const r1=detectRegion(oldT);
+  const r2=detectRegion(newT);
+  if(!r1||r1!==r2){out.innerText="⚠️ التقارير ليست لنفس المنطقة";return;}
+  const o=extractUnits(oldT,r1);
+  const n=extractUnits(newT,r2);
+  let same=[];
+  for(const c in o){
+    if(n[c]&&n[c]===o[c])same.push(c+" — "+o[c]);
+  }
+  out.innerText=same.length
+    ?"❌ الوحدات التي لم تتغير:\n"+same.join("\n")
+    :"✅ جميع الوحدات تغيرت مواقعها";
+}
+
+/* ================== الريست ================== */
+function resetAll(){
+  region.value="";
+  units.value="";
+  reportResult.innerHTML="";
+  dupInput.value="";
+  dupResult.innerHTML="";
+  oldReport.value="";
+  newReport.value="";
+  compareResult.innerHTML="";
+}
+
+/* ================== القلوب ================== */
 let loveMode=false;
-let heartCount=0;
 let stopTimer=null;
 
 document.addEventListener('keydown',e=>{
-  // تفعيل الوضع السري
-  if(e.shiftKey && e.key === 'Enter'){
+  if(e.shiftKey&&e.key==="Enter"){
     loveMode=true;
-    heartCount=0;
-    clearTimeout(stopTimer);
-    removeLoveMessage();
+    document.querySelectorAll('.love-msg').forEach(x=>x.remove());
     return;
   }
-
-  // توليد القلوب (غير محدود)
-  if(loveMode && e.key === 'Enter'){
+  if(loveMode&&e.key==="Enter"){
     e.preventDefault();
-
-    heartCount++;
     spawnLoveHeart();
-
     clearTimeout(stopTimer);
     stopTimer=setTimeout(()=>{
-      endLoveMode();
+      loveMode=false;
+      showLoveMessage();
     },2000);
   }
 });
@@ -301,230 +354,26 @@ function spawnLoveHeart(){
   setTimeout(()=>h.remove(),4000);
 }
 
-function endLoveMode(){
-  loveMode=false;
-  showLoveMessage();
-}
-
 function showLoveMessage(){
-  const msg=document.createElement('div');
-  msg.className='love-msg';
-  msg.innerText='انا احبك كثر القلوب واكثرر 🤍';
-  msg.style.position='fixed';
-  msg.style.bottom='90px';
-  msg.style.left='50%';
-  msg.style.transform='translateX(-50%)';
-  msg.style.background='#fff';
-  msg.style.padding='18px 30px';
-  msg.style.borderRadius='30px';
-  msg.style.color='#ff5fa2';
-  msg.style.fontSize='20px';
-  msg.style.fontWeight='700';
-  msg.style.boxShadow='0 15px 40px rgba(0,0,0,0.25)';
-  msg.style.animation='msgPop 1.2s ease forwards';
-  msg.style.zIndex='9999';
-  document.body.appendChild(msg);
-}
-
-function removeLoveMessage(){
-  document.querySelectorAll('.love-msg').forEach(e=>e.remove());
+  const m=document.createElement('div');
+  m.className='love-msg';
+  m.innerText='انا احبك كثر القلوب واكثرر 🤍';
+  m.style.position='fixed';
+  m.style.bottom='90px';
+  m.style.left='50%';
+  m.style.transform='translateX(-50%)';
+  m.style.background='#fff';
+  m.style.padding='18px 30px';
+  m.style.borderRadius='30px';
+  m.style.color='#ff5fa2';
+  m.style.fontSize='20px';
+  m.style.fontWeight='700';
+  m.style.boxShadow='0 15px 40px rgba(0,0,0,.25)';
+  m.style.animation='msgPop 1.2s ease forwards';
+  m.style.zIndex='9999';
+  document.body.appendChild(m);
 }
 </script>
-
-<audio id="bgSong" loop>
-  <source src="song3.mp3" type="audio/mpeg">
-</audio>
-
-<div id="bgControl">🎵</div>
-
-<script>
-const bgSong=document.getElementById('bgSong');
-const btn=document.getElementById('bgControl');
-
-bgSong.volume=0.70;
-bgSong.play().catch(()=>{});
-
-btn.onclick=()=>bgSong.paused?bgSong.play():bgSong.pause();
-</script>
-
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<title>مقارنة التقارير</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
-<style>
-html{scroll-behavior:smooth;}
-body{
-  font-family:'Cairo', sans-serif;
-  margin:0;
-  padding:20px;
-  background:url('https://i.ibb.co/Fk4VVZrC/Beige-Red-Minimalist-Happy-Valentine-s-Day-Love-You-Card-1.png')
-  no-repeat center center fixed;
-  background-size:cover;
-  transition:opacity .4s;
-}
-.page{animation:pageIn .7s ease;}
-@keyframes pageIn{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:translateY(0)}
-}
-.back-home{
-  display:block;
-  width:fit-content;
-  margin:10px auto 20px;
-  padding:10px 22px;
-  background:#ffbef4;
-  color:#333;
-  text-decoration:none;
-  border-radius:25px;
-  font-weight:700;
-  box-shadow:0 6px 18px rgba(255,190,244,.5);
-}
-.section{
-  background:rgba(255,255,255,0.92);
-  padding:22px;
-  margin:20px auto;
-  max-width:760px;
-  border-radius:18px;
-  box-shadow:0 12px 30px rgba(0,0,0,.15);
-}
-h1,h2{text-align:center;color:#333}
-textarea,input,select,button{
-  width:100%;
-  padding:10px;
-  margin-top:6px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  font-family:'Cairo', sans-serif;
-}
-button{
-  background:#ffbef4;
-  border:none;
-  font-weight:700;
-  cursor:pointer;
-}
-.result{
-  margin-top:15px;
-  padding:15px;
-  background:#fff0fa;
-  border-radius:12px;
-  border:1px solid #ffc7e8;
-}
-.result-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
-}
-.result-table th,
-.result-table td{
-  padding:10px;
-  text-align:center;
-  border-bottom:1px solid #ffd6eb;
-}
-.result-table th{background:#ffbef4}
-</style>
-</head>
-
-<body>
-
-<div class="page">
-
-<!-- ===== قسم مقارنة التقارير ===== -->
-<div class="section">
-<h2>📑 مقارنة تقريرين</h2>
-
-<label>التقرير القديم</label>
-<textarea id="oldReport" rows="10"></textarea>
-
-<label>التقرير الجديد</label>
-<textarea id="newReport" rows="10"></textarea>
-
-<button onclick="runCompare()">قارن</button>
-<div id="compareResult" class="result"></div>
-</div>
-</div>
-
-<script>
-/* ===== منطق TESR7 بدون أي تعديل ===== */
-const REGIONS = {
-  LS: ["لام 1","لام 2","لام 3","لام 4","لام 5","فرسان"],
-  SB: ["سين 1","سين","باء 1","باء","جيم 1","جيم 2"]
-};
-
-function detectRegion(text){
-  if (text.includes("لوس سانتوس")) return "LS";
-  if (text.includes("ساندي") || text.includes("بوليتو")) return "SB";
-  return null;
-}
-
-function extractUnits(report, region){
-  const allowed = REGIONS[region];
-  const lines = report.split(/\n+/);
-  let current = null;
-  const map = {};
-
-  const BLOCKED = [
-    "قيادة","اشراف عام","إشراف عام","مشرف ميداني","العمليات",
-    "نائب العمليات","دعم","الميناء","تسجيل خروج",
-    "وحدات البحث و الإنقاذ","وحدات البحث والإنقاذ",
-    "البحث و الإنقاذ","البحث والإنقاذ"
-  ];
-
-  for(const raw of lines){
-    const line = raw.trim();
-    if(!line) continue;
-    const clean = line.replace(":","").trim();
-
-    if(allowed.includes(clean)){ current = clean; continue; }
-    if(BLOCKED.includes(clean)){ current = null; continue; }
-
-    if(current && /^[A-Z]-\d+/i.test(line)){
-      const code = line.split(" ")[0];
-      map[code] = current;
-    }
-  }
-  return map;
-}
-
-function runCompare(){
-  const oldT = oldReport.value.trim();
-  const newT = newReport.value.trim();
-  const out = document.getElementById("compareResult");
-
-  if(!oldT || !newT){
-    out.innerText="⚠️ أدخل التقريرين";
-    return;
-  }
-
-  const r1 = detectRegion(oldT);
-  const r2 = detectRegion(newT);
-  if(!r1 || r1!==r2){
-    out.innerText="⚠️ التقارير ليست لنفس المنطقة";
-    return;
-  }
-
-  const o = extractUnits(oldT,r1);
-  const n = extractUnits(newT,r2);
-
-  let same=[];
-  for(const c in o){
-    if(n[c] && n[c]===o[c]){
-      same.push(`${c} — ${o[c]}`);
-    }
-  }
-
-  out.innerText = same.length
-    ? "❌ الوحدات التي لم تتغير:\n"+same.join("\n")
-    : "✅ جميع الوحدات تغيرت مواقعها";
-}
-</script>
-
-</body>
-</html>
-
 
 </body>
 </html>
